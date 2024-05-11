@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/rapier-example"
-# rapier2d 0.18.0 requires MSRV 1.74
-rust-version = "1.74"
+# bevy_ecs 0.13 requires MSRV 1.76
+rust-version = "1.76"
 description = "Macroquad Rapier ECS 🦀 Rust game dev — using bevy's 🧩 Entity Component System in a Macroquad game with Rapier physics."
 
 [dependencies]
