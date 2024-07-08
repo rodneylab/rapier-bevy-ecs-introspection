@@ -1,12 +1,20 @@
-use crate::component::{CircleCollider, CircleMesh, CuboidCollider, Position, Sensor, Velocity};
-use crate::resources::{NormalDistribution, PhysicsEngine, SimulationMode, SimulationState};
-use crate::{colours::BALL_COLOURS, component::HeightFieldCollider};
-use crate::{pixel, BALL_RADIUS, WINDOW_HEIGHT, WINDOW_WIDTH};
+use crate::{
+    colours::BALL_COLOURS,
+    component::{
+        CircleCollider, CircleMesh, CuboidCollider, HeightFieldCollider, Position, Sensor, Velocity,
+    },
+    pixel,
+    resources::{NormalDistribution, PhysicsEngine, SimulationMode, SimulationState},
+    BALL_RADIUS, WINDOW_HEIGHT, WINDOW_WIDTH,
+};
 use bevy_ecs::{
+    entity::Entity,
     query::{With, Without},
     system::{Commands, Query, Res, ResMut},
 };
+use egui::{CollapsingHeader, Color32, ScrollArea, Sense, Ui, Vec2};
 use macroquad::{
+    color::Color,
     rand::{self as macroquad_rand},
     shapes::draw_circle,
 };
@@ -20,9 +28,12 @@ use rapier2d::{
     pipeline::ActiveEvents,
     prelude::nalgebra,
 };
-use uom::si::{
-    f32::{Length, Velocity as VelocityUnit},
-    length, velocity,
+use uom::{
+    fmt::DisplayStyle::Abbreviation,
+    si::{
+        f32::{Length, Velocity as VelocityUnit},
+        length, velocity,
+    },
 };
 
 pub fn get_random_ball_velocity(normal_distribution: &mut StdRng) -> Vector2<VelocityUnit> {
@@ -32,6 +43,86 @@ pub fn get_random_ball_velocity(normal_distribution: &mut StdRng) -> Vector2<Vel
         VelocityUnit::new::<velocity::meter_per_second>((2.0 * pseudo_random_value) - 1.0);
     let y_velocity: VelocityUnit = VelocityUnit::new::<velocity::meter_per_second>(1.0);
     vector![x_velocity, y_velocity]
+}
+
+fn draw_ball_ui_data(
+    ui: &mut Ui,
+    entity: Entity,
+    position: &Position,
+    bubble_velocity: &Velocity,
+    circle_mesh: &CircleMesh,
+) {
+    let m = Length::format_args(length::meter, Abbreviation);
+    let m_s = VelocityUnit::format_args(velocity::meter_per_second, Abbreviation);
+    CollapsingHeader::new(format!(
+        "Entity Generation:ID {}:{}",
+        entity.generation(),
+        entity.index()
+    ))
+    .default_open(false)
+    .show(ui, |ui| {
+        ui.horizontal(|ui| {
+            ui.label("Position");
+            ui.label(format!(
+                "x: {:.2}, y: {:.2}",
+                m.with(position.0.x),
+                m.with(position.0.y)
+            ))
+        });
+        ui.horizontal(|ui| {
+            ui.label("Velocity");
+            ui.label(format!(
+                "x: {:.2}, y: {:.2}",
+                m_s.with(bubble_velocity.0.x),
+                m_s.with(bubble_velocity.0.y)
+            ))
+        });
+        ui.horizontal(|ui| {
+            ui.label("Colour");
+            let radius = 6.0;
+            let size = Vec2::splat(2.0 * radius + 5.0);
+            let (rect, _response) = ui.allocate_at_least(size, Sense::hover());
+            let Color { r, g, b, .. } = circle_mesh.colour;
+            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+            {
+                ui.painter().circle_filled(
+                    rect.center(),
+                    radius,
+                    Color32::from_rgb(
+                        (255.0 * r).floor() as u8,
+                        (255.0 * g).floor() as u8,
+                        (255.0 * b).floor() as u8,
+                    ),
+                );
+            }
+        });
+        ui.horizontal(|ui| {
+            ui.label("Radius");
+            ui.label(format!("{}", m.with(circle_mesh.radius),))
+        });
+    });
+}
+
+#[allow(clippy::needless_pass_by_value)]
+pub fn update_dev_tools_system(query: Query<(Entity, &Position, &Velocity, &CircleMesh)>) {
+    egui_macroquad::ui(|egui_ctx| {
+        egui_ctx.set_pixels_per_point(4.0);
+        egui::Window::new("Developer Tools").show(egui_ctx, |ui| {
+            ScrollArea::vertical().show(ui, |ui| {
+                CollapsingHeader::new("Bubbles")
+                    .default_open(false)
+                    .show(ui, |ui| {
+                        for (entity, position, bubble_velocity, circle_mesh) in &query {
+                            draw_ball_ui_data(ui, entity, position, bubble_velocity, circle_mesh);
+                        }
+                    });
+            });
+        });
+    });
+}
+
+pub fn draw_dev_tools_system() {
+    egui_macroquad::draw();
 }
 
 pub fn create_ball_physics_system(

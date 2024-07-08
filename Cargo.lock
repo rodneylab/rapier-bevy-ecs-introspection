@@ -748,7 +748,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "macroquad-rapier-bevy-ecs"
+name = "macroquad-bevy-ecs-introspection"
 version = "0.1.0"
 dependencies = [
  "bevy_ecs",

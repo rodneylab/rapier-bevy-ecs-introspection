@@ -21,9 +21,10 @@ use rapier2d::{na::vector, prelude::nalgebra};
 use resources::{NormalDistribution, PhysicsEngine, SimulationMode, SimulationState};
 use systems::{
     create_ball_physics_system, create_cuboid_colliders_system, create_cuboid_sensors_system,
-    create_height_field_colliders_system, draw_balls_system, end_simulation_system,
-    get_random_ball_velocity, spawn_fixed_colliders_system, spawn_ground_sensor_system,
-    spawn_new_ball_system, step_physics_engine_system, update_balls_system,
+    create_height_field_colliders_system, draw_balls_system, draw_dev_tools_system,
+    end_simulation_system, get_random_ball_velocity, spawn_fixed_colliders_system,
+    spawn_ground_sensor_system, spawn_new_ball_system, step_physics_engine_system,
+    update_balls_system, update_dev_tools_system,
 };
 use uom::{
     si::{f32::Length, length},
@@ -48,7 +49,7 @@ unit! {
 fn conf() -> Conf {
     #[allow(clippy::cast_possible_truncation)]
     Conf {
-        window_title: String::from("Macroquad Rapier Bubbles with Units of Measurement"),
+        window_title: String::from("Macroquad Rapier Bevy ECS Introspection"),
         window_width: WINDOW_WIDTH as i32,
         window_height: WINDOW_HEIGHT as i32,
         high_dpi: true,
@@ -119,6 +120,9 @@ async fn main() {
     let mut paused_schedule = Schedule::default();
     paused_schedule.add_systems(draw_balls_system);
 
+    let mut paused_schedule = Schedule::default();
+    paused_schedule.add_systems(draw_balls_system);
+
     let mut playing_schedule = Schedule::default();
     playing_schedule
         .configure_sets(
@@ -130,7 +134,15 @@ async fn main() {
                 .chain(),
         )
         .add_systems(
-            (create_ball_physics_system, draw_balls_system)
+            (
+                create_ball_physics_system,
+                (
+                    update_dev_tools_system,
+                    draw_balls_system,
+                    draw_dev_tools_system,
+                )
+                    .chain(),
+            )
                 .chain()
                 .in_set(ScheduleSet::BeforeSimulation),
         )
@@ -162,6 +174,8 @@ async fn main() {
             }
             SimulationMode::Paused => paused_schedule.run(&mut world),
         }
+
+        //egui_macroquad::draw();
 
         next_frame().await;
     }

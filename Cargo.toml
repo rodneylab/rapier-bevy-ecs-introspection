@@ -1,11 +1,11 @@
 [package]
-name = "macroquad-rapier-bevy-ecs"
+name = "macroquad-bevy-ecs-introspection"
 version = "0.1.0"
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/rapier-example"
 # bevy_ecs 0.14 requires MSRV 1.78
-rust7version = "1.78"
+rust-version = "1.78"
 description = "Macroquad Rapier ECS 🦀 Rust game dev — using bevy's 🧩 Entity Component System in a Macroquad game with Rapier physics."
 
 [dependencies]
