@@ -11,7 +11,7 @@
 
 # macroquad-rapier-bevy-ecs
 
-Demo for using the Bevy ECS in a Macroquad game with Rapier physics. This code accompanies the <a href="https://rodneylab.com/macroquad-rapier-ecs/">blog post on using a Macroquad Rapier ECS</a>. If you have any questions, please drop a comment at the bottom of that page.
+Demo for using the Bevy ECS in a Macroquad game with Rapier physics and egui for Introspection. This code accompanies the <a href="https://rodneylab.com/using-egui-for-bevy-ecs-introspection/">blog post on using egui for Introspection with Macroquad, Rapier and Bevy ECS</a>. If you have any questions, please drop a comment at the bottom of that page.
 
 ## Usage
 
