@@ -19,7 +19,7 @@ use macroquad::{
     shapes::draw_circle,
 };
 use rand::{rngs::StdRng, Rng};
-use rand_distr::Standard;
+use rand_distr::StandardUniform;
 use rapier2d::{
     dynamics::RigidBodyBuilder,
     geometry::{ColliderBuilder, CollisionEvent, CollisionEventFlags},
@@ -38,7 +38,7 @@ use uom::{
 
 pub fn get_random_ball_velocity(normal_distribution: &mut StdRng) -> Vector2<VelocityUnit> {
     // Standard generates values in the [0,1) range
-    let pseudo_random_value: f32 = normal_distribution.sample(Standard);
+    let pseudo_random_value: f32 = normal_distribution.sample(StandardUniform);
     let x_velocity: VelocityUnit =
         VelocityUnit::new::<velocity::meter_per_second>((2.0 * pseudo_random_value) - 1.0);
     let y_velocity: VelocityUnit = VelocityUnit::new::<velocity::meter_per_second>(1.0);

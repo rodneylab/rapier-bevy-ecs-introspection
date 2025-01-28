@@ -30,7 +30,7 @@ pub struct NormalDistribution(pub StdRng);
 
 impl Default for NormalDistribution {
     fn default() -> Self {
-        NormalDistribution(StdRng::from_entropy())
+        NormalDistribution(StdRng::from_os_rng())
     }
 }
 
