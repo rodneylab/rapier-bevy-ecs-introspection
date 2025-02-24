@@ -350,7 +350,7 @@ pub fn end_simulation_system(
         ) = collision_event
         {
             simulation_state.mode = SimulationMode::Paused;
-        };
+        }
     }
 }
 
