@@ -246,7 +246,7 @@ pub fn spawn_fixed_colliders_system(mut commands: Commands) {
         scale: vector![ceiling_width.value, collider_half_thickness.value],
         translation: vector![
             0.5 * window_width.get::<length::meter>(),
-            -1.0 * collider_half_thickness.value
+            -collider_half_thickness.value
         ],
     });
 
