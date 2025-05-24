@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/rodneylab/rapier-bevy-ecs-introspection"
-# bevy_ecs 0.15 requires MSRV 1.83
-rust-version = "1.83"
+# bevy_ecs 0.15 requires MSRV 1.85
+rust-version = "1.85"
 description = "Macroquad Rapier ECS 🦀 Rust game dev — using bevy's 🧩 Entity Component System in a Macroquad game with Rapier physics."
 
 [dependencies]
@@ -16,5 +16,5 @@ egui-macroquad = "0.15.0"
 macroquad = { version = "0.3.26", default-features = false }
 rand = "0.9.1"
 rand_distr = "0.5.1"
-rapier2d = { version = "0.25.1", features = ["simd-stable"] }
-uom = "0.36.0"
+rapier2d = { version = "0.26.1", features = ["simd-stable"] }
+uom = "0.37.0"
